@@ -12,12 +12,19 @@ package com.mycompany.blackjack.blackjack;
 
 import java.util.Scanner;
 
+/**
+ * The BlackjackGame class represents the main control logic of the Blackjack game.
+ */
 public class BlackjackGame {
-    private final Deck deck;
-    private final Player player;
-    private final Player dealer;
-    private final Scanner scanner;
+    private final Deck deck;      // Represents the deck of cards
+    private final Player player;  // Represents the player
+    private final Player dealer;  // Represents the dealer
+    private final Scanner scanner; // Used for user input
 
+    /**
+     * Constructor to initialize the game.
+     * Creates a deck, player, dealer, and scanner for user input.
+     */
     public BlackjackGame() {
         deck = new Deck();
         player = new Player("Player");
@@ -25,15 +32,20 @@ public class BlackjackGame {
         scanner = new Scanner(System.in);
     }
 
+    /**
+     * Starts the Blackjack game.
+     * Manages the game loop, including dealing cards, player's turn, dealer's turn, and outcome determination.
+     */
     public void startGame() {
         System.out.println("Welcome to Blackjack!");
 
         while (true) {
+            // Clear hands and shuffle the deck at the start of each game
             player.clearHand();
             dealer.clearHand();
             deck.shuffle();
 
-            // Initial deal
+            // Initial deal: each player gets two cards
             player.addCard(deck.dealCard());
             player.addCard(deck.dealCard());
             dealer.addCard(deck.dealCard());
@@ -43,34 +55,40 @@ public class BlackjackGame {
             while (true) {
                 System.out.println(player);
 
-                // Ensure the dealer's hand is not empty before accessing the first card
+                // Display the dealer's visible card
                 if (!dealer.getHand().isEmpty()) {
                     System.out.println("Dealer's visible card: " + dealer.getHand().get(0));
                 }
 
+                // Check if the player has busted
                 if (player.isBust()) {
                     System.out.println("You bust! Dealer wins.");
                     break;
                 }
 
+                // Ask the player if they want to hit or stand
                 System.out.println("Do you want to hit or stand? (h/s)");
                 String choice = scanner.nextLine();
 
+                // If player chooses to hit, deal another card
                 if (choice.equalsIgnoreCase("h")) {
                     player.addCard(deck.dealCard());
                 } else {
+                    // If player stands, end their turn
                     break;
                 }
             }
 
             // Dealer's turn
             if (!player.isBust()) {
+                // Dealer hits until their hand value is at least 17
                 while (dealer.getHandValue() < 17) {
                     dealer.addCard(deck.dealCard());
                 }
 
                 System.out.println(dealer);
 
+                // Determine the outcome of the game
                 if (dealer.isBust() || player.getHandValue() > dealer.getHandValue()) {
                     System.out.println("You win!");
                 } else if (player.getHandValue() == dealer.getHandValue()) {
@@ -80,9 +98,11 @@ public class BlackjackGame {
                 }
             }
 
+            // Ask the player if they want to play again
             System.out.println("Do you want to play again? (y/n)");
             String playAgain = scanner.nextLine();
 
+            // If the player chooses not to play again, exit the game loop
             if (!playAgain.equalsIgnoreCase("y")) {
                 break;
             }
@@ -91,10 +111,16 @@ public class BlackjackGame {
         System.out.println("Thanks for playing!");
     }
 
+    /**
+     * Main method to start the Blackjack game.
+     *
+     * @param args Command line arguments (not used in this program)
+     */
     public static void main(String[] args) {
         BlackjackGame game = new BlackjackGame();
         game.startGame();
     }
 }
+
 
 
